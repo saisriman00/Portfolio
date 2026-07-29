@@ -1,0 +1,8 @@
+/* ADD THIS TO BOTTOM OF YOUR App.css */
+.app {
+  opacity: 0;
+  transition: opacity .6s ease;
+}
+.app.visible {
+  opacity: 1;
+}
