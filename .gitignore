@@ -1,0 +1,14 @@
+# Python
+backend/venv/
+__pycache__/
+*.pyc
+
+# Node
+my-app/node_modules/
+my-app/dist/
+
+# Environment
+.env
+
+# VS Code
+.vscode/
