@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./Contact.css";
 
-const API = "PASTE_YOUR_COPIED_GOOGLE_SCRIPT_WEB_APP_URL_HERE";
+const API = "https://script.google.com/macros/s/AKfycbydvwrn-nPklzfFvWcBGRQ0CGQgr6vekrDsdmhf_MY/dev";
 
 export default function Contact() {
   const [form,   setForm]   = useState({ name:"", email:"", message:"" });
