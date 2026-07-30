@@ -20,7 +20,7 @@ export default function Contact() {
 
     // Client-side Validation Checks
     const errs = [];
-    if (!form.name.trim()) errs.append("Name is required.");
+    if (!form.name.trim()) errs.push("Name is required.");
     if (!form.email.trim()) {
       errs.push("Email is required.");
     } else if (!/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(form.email)) {
