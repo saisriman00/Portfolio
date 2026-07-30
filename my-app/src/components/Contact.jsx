@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import "./Contact.css";
 
-const API = "https://script.google.com/macros/s/AKfycbyPRT4YUBWM3z7MfXJh9TUBPLWrb-iblp_v_mn_MqjwTQymz7O0L29JBmCM5LHxdGM/exec";
+
+const API = "https://script.google.com/macros/s/AKfycbznLa3ryzoy1rvrB9AhsoK2uK-b71wlE1PawJtwXcaPc61v0cYu7VpOixX6PdiSDtlU/exec";
 
 export default function Contact() {
-  const [form,   setForm]   = useState({ name:"", email:"", message:"" });
+  const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [status, setStatus] = useState("idle");
   const [errors, setErrors] = useState([]);
 
@@ -40,26 +41,24 @@ export default function Contact() {
     formData.append("email", form.email);
     formData.append("message", form.message);
 
-    {[
-  { id: "name", label: "Your Name", type: "text", ph: "Sai Srimannarayana", max: 100, ac: "name" },
-  { id: "email", label: "Email Address", type: "email", ph: "you@company.com", max: 150, ac: "email" },
-].map(f => (
-  <div className="fg" key={f.id}>
-    <label htmlFor={f.id}>{f.label}</label>
-    <input 
-      id={f.id} 
-      name={f.id} 
-      type={f.type} 
-      value={form[f.id]} 
-      onChange={change} 
-      placeholder={f.ph} 
-      required 
-      maxLength={f.max} 
-      autoComplete={f.ac} // 🟢 Fixes the warning for Name and Email inputs
-    />
-  </div>
-))}
-
+    try {
+      const res = await fetch(API, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: formData,
+      });
+      const data = await res.json();
+      
+      if (data.result === "success") {
+        setStatus("success");
+        setForm({ name: "", email: "", message: "" });
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 2500);
+      } else {
+        setErrors([data.error || "Something went wrong saving the message."]);
+        setStatus("error");
+      }
     } catch {
       setErrors(["Network issue. Failed to connect to Google Sheets."]); 
       setStatus("error");
@@ -106,25 +105,36 @@ export default function Contact() {
                 <div className="err-box">{errors.map((e,i)=><p key={i}>⚠ {e}</p>)}</div>
               )}
               {[
-                { id:"name",    label:"Your Name",      type:"text",  ph:"Sai Srimannarayana", max:100 },
-                { id:"email",   label:"Email Address",  type:"email", ph:"you@company.com",    max:150 },
+                { id: "name",  label: "Your Name",     type: "text",  ph: "Sai Srimannarayana", max: 100, ac: "name" },
+                { id: "email", label: "Email Address", type: "email", ph: "you@company.com",    max: 150, ac: "email" },
               ].map(f => (
                 <div className="fg" key={f.id}>
                   <label htmlFor={f.id}>{f.label}</label>
                   <input
-                    id={f.id} name={f.id} type={f.type}
-                    value={form[f.id]} onChange={change}
-                    placeholder={f.ph} required maxLength={f.max}
+                    id={f.id} 
+                    name={f.id} 
+                    type={f.type}
+                    value={form[f.id]} 
+                    onChange={change}
+                    placeholder={f.ph} 
+                    required 
+                    maxLength={f.max}
+                    autoComplete={f.ac} // 🟢 Fixes autofill warnings
                   />
                 </div>
               ))}
               <div className="fg">
                 <label htmlFor="message">Message</label>
                 <textarea
-                  id="message" name="message"
-                  value={form.message} onChange={change}
+                  id="message" 
+                  name="message"
+                  value={form.message} 
+                  onChange={change}
                   placeholder="Hi Sai, I'd like to discuss a role…"
-                  required rows={5} maxLength={2000}
+                  required 
+                  rows={5} 
+                  maxLength={2000}
+                  autoComplete="off" // 🟢 Cleans up text area warning profiles
                 />
                 <span className="char">{form.message.length}/2000</span>
               </div>
