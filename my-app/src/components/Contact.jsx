@@ -40,22 +40,26 @@ export default function Contact() {
     formData.append("email", form.email);
     formData.append("message", form.message);
 
-    try {
-      const res = await fetch(API, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: formData,
-      });
-      
-      const data = await res.json();
-      if (data.result === "success") {
-        setStatus("success");
-        setForm({ name:"", email:"", message:"" });
-        setTimeout(() => { window.location.href = "/"; }, 2500);
-      } else {
-        setErrors([data.error || "Something went wrong saving the message."]); 
-        setStatus("error");
-      }
+    {[
+  { id: "name", label: "Your Name", type: "text", ph: "Sai Srimannarayana", max: 100, ac: "name" },
+  { id: "email", label: "Email Address", type: "email", ph: "you@company.com", max: 150, ac: "email" },
+].map(f => (
+  <div className="fg" key={f.id}>
+    <label htmlFor={f.id}>{f.label}</label>
+    <input 
+      id={f.id} 
+      name={f.id} 
+      type={f.type} 
+      value={form[f.id]} 
+      onChange={change} 
+      placeholder={f.ph} 
+      required 
+      maxLength={f.max} 
+      autoComplete={f.ac} // 🟢 Fixes the warning for Name and Email inputs
+    />
+  </div>
+))}
+
     } catch {
       setErrors(["Network issue. Failed to connect to Google Sheets."]); 
       setStatus("error");
