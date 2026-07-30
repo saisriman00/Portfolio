@@ -25,7 +25,7 @@ def contact():
     errs = []
     if not name:                  errs.append("Name is required.")
     if not valid_email(email):    errs.append("Valid email required.")
-    if len(message) < 10:        errs.append("Message must be at least 10 characters.")
+    if not message:        errs.append("Message is required.")
     if errs: return jsonify(success=False, errors=errs), 400
 
     conn = cur = None
