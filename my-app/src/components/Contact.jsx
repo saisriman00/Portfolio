@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./Contact.css";
 
-const API = "http://localhost:5000/api/contact";
+const API = "PASTE_YOUR_COPIED_GOOGLE_SCRIPT_WEB_APP_URL_HERE";
 
 export default function Contact() {
   const [form,   setForm]   = useState({ name:"", email:"", message:"" });
@@ -15,23 +15,50 @@ export default function Contact() {
 
   const submit = async (e) => {
     e.preventDefault();
-    setStatus("loading"); setErrors([]);
+    setStatus("loading"); 
+    setErrors([]);
+
+    // Client-side Validation Checks
+    const errs = [];
+    if (!form.name.trim()) errs.append("Name is required.");
+    if (!form.email.trim()) {
+      errs.push("Email is required.");
+    } else if (!/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(form.email)) {
+      errs.push("Please provide a valid email address.");
+    }
+    if (form.message.trim().length < 10) errs.push("Message must be at least 10 characters long.");
+
+    if (errs.length > 0) {
+      setErrors(errs);
+      setStatus("error");
+      return;
+    }
+
+    // Format fields specifically for Google Apps Script requirements
+    const formData = new URLSearchParams();
+    formData.append("name", form.name);
+    formData.append("email", form.email);
+    formData.append("message", form.message);
+
     try {
-      const res  = await fetch(API, {
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body: JSON.stringify(form),
+      const res = await fetch(API, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: formData,
       });
+      
       const data = await res.json();
-      if (data.success) {
+      if (data.result === "success") {
         setStatus("success");
         setForm({ name:"", email:"", message:"" });
         setTimeout(() => { window.location.href = "/"; }, 2500);
       } else {
-        setErrors(data.errors || ["Something went wrong."]); setStatus("error");
+        setErrors([data.error || "Something went wrong saving the message."]); 
+        setStatus("error");
       }
     } catch {
-      setErrors(["Cannot reach server. Is Flask running on port 5000?"]); setStatus("error");
+      setErrors(["Network issue. Failed to connect to Google Sheets."]); 
+      setStatus("error");
     }
   };
 
