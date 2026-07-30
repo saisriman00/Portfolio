@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./Contact.css";
 
 // Your updated Apps Script endpoint string
-const API = "https://script.google.com/macros/s/AKfycbznLa3ryzoy1rvrB9AhsoK2uK-b71wlE1PawJtwXcaPc61v0cYu7VpOixX6PdiSDtlU/exec";
+const API = "https://script.google.com/macros/s/AKfycbzvTT3ezDO6PF0i55cZQfqqVMT9egRv6TLujD9zggoRjzrDZ1kjmFDlUi0ilmxxVi9y/exec";
 
 export default function Contact() {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
